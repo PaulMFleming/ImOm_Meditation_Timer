@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block content %}
+
+    <div class="container col-sm-10 col-sm-offset-1">
+        <h2>Im.Om Meditation Timer</h2>
+        <hr>
+        <p>
+            The timer will play three bells, one at the start of your prep time to give you time to
+            get comfortable. One at the start of the meditation time and one at the end to let you
+            know your meditation has finished.
+        </p>
+        <p>
+            You can hear the different bells and a sample of the ambient sounds by clicking on them.
+        </p>
+        <hr>
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>Set Prep Time</h2>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary active" id="tenSec" onclick="setPrepTime(this.id)">
+                        <input type="radio" name="options"  autocomplete="off" checked>10 sec
+                    </label>
+                    <label class="btn btn-primary" id="thirtySec" onclick="setPrepTime(this.id)">
+                        <input type="radio" name="options" autocomplete="off">30 sec
+                    </label>
+                    <label class="btn btn-primary" id="sixtySec" onclick="setPrepTime(this.id)">
+                        <input type="radio" name="options" autocomplete="off">60 sec
+                    </label>
+                </div>  
+            </div>
+            <div class="col-sm-6">
+                <h2>Set Meditation Time</h2>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary active" id="threeMin" onclick="setTime(this.id)">
+                        <input type="radio" name="options" autocomplete="off" checked>3 mins
+                    </label>
+                    <label class="btn btn-primary" id="fiveMin" onclick="setTime(this.id)">
+                        <input type="radio" name="options" autocomplete="off">5 mins
+                    </label>
+                    <label class="btn btn-primary" id="sevenMin" onclick="setTime(this.id)">
+                        <input type="radio" name="options" autocomplete="off">7 mins
+                    </label>
+                    <label class="btn btn-primary"id="tenMin"  onclick="setTime(this.id)">
+                        <input type="radio" name="options" autocomplete="off">10 mins
+                    </label>
+                    <label class="btn btn-primary" id="thirteenMin" onclick="setTime(this.id)">
+                        <input type="radio" name="options" autocomplete="off">13 mins
+                    </label>
+                    <label class="btn btn-primary" id="fifteenMin" onclick="setTime(this.id)">
+                        <input type="radio" name="options" autocomplete="off">15 mins
+                    </label>    
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <h2>Set Bell Sound</h2>
+                <div class="btn-group" data-toggle="buttons">
+                   <label class="btn btn-primary active" id="bellOne" onclick="setBell(this.id)">
+                       <input type="radio" name="options"  autocomplete="off"   checked> Bell One
+                   </label>
+                   <label class="btn btn-primary" id="bellTwo" onclick="setBell(this.id)">
+                     <input type="radio" name="options" autocomplete="off" > Bell Two
+                   </label>
+                   {% block extrabellfiles %}
+                   {% endblock %}
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <h2>Set Ambient Sound</h2>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary active" id="noAmbient" onclick="setAmbient(this.id)">
+                        <input type="radio" name="options" autocomplete="off"   checked> No Sound
+                    </label>
+                    <label class="btn btn-primary" id="ambientOne" onclick="setAmbient(this.id)">
+                      <input type="radio" name="options" autocomplete="off" > Ambient One
+                    </label>
+                    <label class="btn btn-primary" id="ambientTwo" onclick="setAmbient(this.id)">
+                      <input type="radio" name="options" autocomplete="off" > Ambient Two
+                    </label>
+                    {% block extraambientfiles %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="row col-sm-offset-4">
+            <button class="btn btn-lg btn-success" id="startButton" onclick="playTone(), prepCountdown()" data-toggle="modal" data-target="#myModal">Begin Meditation</button>
+            <hr>
+        </div>
+
+        <div class="row">
+            <h2>Set Focus Image</h2>
+            <div class="checkbox">
+                <label><input type="checkbox" value="" id="no-image" onclick="setImage(this.id)">No image</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 col-sm-4 col-xs-3">
+                <img class="img-responsive focus-image image-effect-class" id="yinyang-image" onclick="setImage(this.id)" src="{% static "media/images/yin-yang_stones.jpg" %}" />
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-3">
+                <img class="img-responsive focus-image image-effect-class" id="om-image" onclick="setImage(this.id)" src="{% static "media/images/on_red_bg.jpg" %}" />
+            </div>
+            {% block extraimagefiles %}
+            {% endblock %}
+
+        </div>
+        <br>
+        <div class="row">
+            {% block myimagefiles %}
+            {% endblock %}
+        </div>
+        
+
+
+        
+    
+    {% block timermodal %}
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-lg">    
+        <!-- Modal content-->
+        <div class="modal-content" id="timer-modal">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Meditation Timer</h4>
+            </div>
+            <div class="modal-body">
+                <input type="text" id='text' value="  choose time">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-warning" id="pauseButton" onclick="stopMe()">Pause</button>
+                <button class="btn btn-danger" id="resetButton" onclick="resetMe()">Finish Early</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>  
+    </div>
+    {% endblock %}
+
+
+    <!-- Bells -->
+    <audio class="bells" id="bell-one">
+        <source src="{% static "media/audio/bells/bellOne.mp3" %}">
+    </audio>
+    <audio class="bells" id="bell-two">
+        <source src="{% static "media/audio/bells/bellTwo.mp3" %}">
+    </audio>
+    <audio class="bells" id="bell-three">
+        <source src="{% static "media/audio/bells/bellThree.mp3" %}">
+    </audio>
+    <audio class="bells" id="bell-four">
+        <source src="{% static "media/audio/bells/bellFour.mp3" %}">
+    </audio>
+
+    <!-- Ambient Tones -->
+    <audio class="ambient" id="ambient-one">
+        <source src="{% static "media/audio/ambient/ambientOne.mp3" %}">
+    </audio>
+    <audio class="ambient" id="ambient-one-sampler">
+        <source src="{% static "media/audio/ambient/ambientOneSampler.mp3" %}">
+    </audio>
+    <audio class="ambient" id="ambient-two">
+        <source src="{% static "media/audio/ambient/ambientTwo.mp3" %}">
+    </audio>
+    <audio class="ambient" id="ambient-two-sampler">
+            <source src="{% static "media/audio/ambient/ambientTwoSampler.mp3" %}">
+        </audio>
+    <audio class="ambient" id="ambient-three">
+        <source src="{% static "media/audio/ambient/ambientThree.mp3" %}">
+    </audio>
+    <audio class="ambient" id="ambient-three-sampler">
+        <source src="{% static "media/audio/ambient/ambientThreeSampler.mp3" %}">
+    </audio>
+    <audio class="ambient" id="no-ambient">
+            <source src="{% static "media/audio/ambient/noAmbient.mp3" %}">
+    </audio>
+{% endblock %}
+
+{% block scripts %}
+    {{ block.super}}
+    <!-- Add Moment.js for easier time formatting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <!-- Custom script to control the timer -->
+
+    <script type="text/javascript" src="{% static "js/timer.js" %}"></script>
+{% endblock %}
+</div>
